@@ -5,7 +5,7 @@ import pandas as pd
 def detectaZip(zipParentName, ruta):
     global listaRutas
     # Error en linea: zipParentName es listado como ruta
-    # Ejemplo: 'roberto_raso_mx_ey_com/Documents/Desktop/Compañías/RR/CNOOC/2021/Carpeta Jessie/Cálculo LC 2020 presentado 2021/Archivos para proveedores.zip'
+    # Intentar llamar ruta completa / intentar separar string en lista y tomar último elemento
     # Separar 
     myzip = ZipFile(zipParentName, 'r')
     ruta = ruta + '/' + zipParentName
