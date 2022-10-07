@@ -24,11 +24,12 @@ def detectaZip(zipParentName, ruta):
     
     myzip.close()
 
-ruta = "A:/Mina/20220829-kmc-001/OD/RRaso/VB read files/20210827_To_20220401/SharePoint - Copy"
+ruta = "Ruta con /"
 listaRutas = list()
 os.chdir(ruta)
 
-zipParentName = 'Roberto C Raso Salinas-2.zip'
+# Cambiar para que busque los archivos desde os
+zipParentName = 'Nombre base'
 
 detectaZip(zipParentName, ruta)
 
