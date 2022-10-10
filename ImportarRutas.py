@@ -1,38 +1,39 @@
+import zipfile
+import io
+import sys
 import os
-from zipfile import ZipFile
 import pandas as pd
 
-def detectaZip(zipParentName, ruta):
-    global listaRutas
-    # Error en linea: zipParentName es listado como ruta
-    # Intentar llamar ruta completa / intentar separar string en lista y tomar último elemento
-    # Separar 
-    myzip = ZipFile(zipParentName, 'r')
-    ruta = ruta + '/' + zipParentName
-    print('parent:', zipParentName)
-    # print('ruta:', ruta)
-    for name in myzip.namelist():
-        print(name)
-        nameAsList = name.split('/')
-        print(nameAsList[:-1])
-        # rutaArchivo = ruta + '/' + name
-        # listaRutas.append(rutaArchivo)
+def enlistaRutas(zipFile, parent=[]):
+    result = []
+    try:
+        myzip = zipfile.ZipFile(zipFile, 'r')
+        for name in myzip.namelist():
+            path = parent + [name]
+            if name.lower().endswith(".zip"):
+                result += enlistaRutas(io.BytesIO(myzip.open(name).read()), path)
+            else:
+                result.append("/".join(path))
 
-        # if name.endswith('.zip'):
-        #     print(name, ruta)
-        #     detectaZip(name, ruta)
-    
-    myzip.close()
+    except Exception as ex:
+        return result
 
-ruta = "Ruta con /"
-listaRutas = list()
+    return result
+
+ruta = 'C:/Users/AL256AN/OneDrive - EY/Documents/Pruebas Python'
 os.chdir(ruta)
 
-# Cambiar para que busque los archivos desde os
-zipParentName = 'Nombre base'
+listaRutas = list()
+dirs = os.listdir()
+for file in dirs:
+    if file.endswith('.zip'):
+        listaRutas += enlistaRutas(open(file, "rb"), [ruta + '/' + file])
 
-detectaZip(zipParentName, ruta)
-
+# print("\n".join(listaRutas))
 data = pd.DataFrame(listaRutas)
-data.head()
-data.to_csv('Lista_rutas.csv', sep=";", index=False, header=None)
+CSV_name = 'Lista_rutas.csv'
+data.to_csv(CSV_name, sep=";", index=False, header=None)
+
+# listaRutas = enlistaRutas(open("Prueba01.zip", "rb"), ["Prueba01.zip"])
+# print(listaRutas)
+# print("\n".join(enlistaRutas(open("Prueba01.zip", "rb"), ["Prueba01.zip"])))
